@@ -1,8 +1,8 @@
-# ATS Resume Analyzer
+# ATS Resume Checker
 
 ## Overview
 
-This is a frontend-only web application for analyzing resumes against Applicant Tracking Systems (ATS). The application provides client-side resume analysis with modern design, dark mode support, and full responsiveness. Users can upload PDF or DOCX resumes, select target job roles, and receive detailed ATS scoring, keyword analysis, and improvement suggestions.
+This is a pure frontend-only web application for analyzing resumes against Applicant Tracking Systems (ATS). Built with React and Vite, the application provides 100% client-side resume analysis with modern design, dark mode support, and full responsiveness. Users can upload PDF or DOCX resumes, select target job roles, and receive detailed ATS scoring, keyword analysis, and improvement suggestions. All processing happens locally in the browser with no backend dependencies.
 
 ## User Preferences
 
@@ -19,15 +19,16 @@ Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-### Frontend Architecture
-- **Framework**: React 18 with TypeScript
+### Pure Frontend Architecture
+- **Framework**: React 18 with TypeScript - Pure client-side application
 - **Routing**: Wouter for client-side routing
 - **Styling**: Tailwind CSS with shadcn/ui components and custom design system
-- **State Management**: React hooks for local state management
-- **Build Tool**: Vite for development and building
+- **State Management**: React hooks for local state management (no external state library)
+- **Build Tool**: Vite for development server and static site generation
 - **UI Library**: Comprehensive component library using Radix UI primitives
-- **Theme System**: Custom dark/light mode implementation with system preference detection
-- **File Processing**: 100% client-side PDF and DOCX parsing with no server dependency
+- **Theme System**: Custom dark/light mode implementation with localStorage persistence
+- **File Processing**: 100% client-side PDF and DOCX parsing with no backend dependencies
+- **Deployment**: Static site deployable to Vercel, Netlify, or any static hosting platform
 
 ### Design System
 - **Color Scheme**: Custom HSL-based color system with full dark mode support
@@ -77,13 +78,11 @@ Preferred communication style: Simple, everyday language.
 
 ## External Dependencies
 
-### Core Dependencies
-- **@neondatabase/serverless**: PostgreSQL database connection
-- **drizzle-orm**: Database ORM and query builder
-- **@tanstack/react-query**: Server state management
-- **wouter**: Lightweight React router
-- **pdfjs-dist**: PDF text extraction
-- **zod**: Schema validation
+### Core Frontend Dependencies
+- **wouter**: Lightweight React router for client-side navigation
+- **pdfjs-dist**: PDF text extraction library for client-side parsing
+- **mammoth**: DOCX text extraction library for Word document parsing
+- **zod**: Schema validation for form inputs and data structures
 
 ### UI Dependencies
 - **@radix-ui/***: Comprehensive set of unstyled UI primitives
