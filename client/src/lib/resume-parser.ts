@@ -1,4 +1,5 @@
 import { FileInfo } from '../types/resume';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 
 export class ResumeParser {
   async parseFile(file: File): Promise<FileInfo> {
@@ -30,7 +31,10 @@ export class ResumeParser {
       const pdfjsLib = await import('pdfjs-dist');
       
       // Set worker source - use jsdelivr CDN for better compatibility
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.3.93/build/pdf.worker.min.js`;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+      'pdfjs-dist/legacy/build/pdf.worker.min.js',
+      import.meta.url
+      ).toString();
 
       const arrayBuffer = await file.arrayBuffer();
       
