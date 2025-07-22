@@ -17,38 +17,46 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <Card>
+    <Card className="card-enhanced card-hover">
       <CardContent className="p-6">
         <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center">
-          <TrendingUp className="text-primary mr-2" size={20} />
+          <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center mr-3">
+            <TrendingUp className="text-primary-foreground" size={14} />
+          </div>
           ATS Score Analysis
         </h3>
 
         {/* ATS Score Display */}
         <div className="text-center mb-8">
-          <div className="relative inline-flex items-center justify-center w-32 h-32 mb-4">
+          <div className="relative inline-flex items-center justify-center w-40 h-40 mb-6">
+            {/* Background glow */}
+            <div className={`absolute inset-0 rounded-full blur-xl opacity-20 ${
+              score >= 80 ? 'bg-success' : 
+              score >= 60 ? 'bg-warning' : 'bg-error'
+            }`}></div>
+            
             {/* Circular Progress Ring */}
-            <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+            <svg className="w-40 h-40 transform -rotate-90 relative z-10" viewBox="0 0 120 120">
               <circle 
                 cx="60" 
                 cy="60" 
                 r="50" 
                 stroke="currentColor" 
-                strokeWidth="8" 
+                strokeWidth="6" 
                 fill="none"
-                className="text-border"
+                className="text-muted/30"
               />
               <circle 
                 cx="60" 
                 cy="60" 
                 r="50" 
                 stroke="currentColor" 
-                strokeWidth="8" 
+                strokeWidth="6" 
                 fill="none" 
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
                 strokeLinecap="round"
-                className={`transition-all duration-1000 ease-out ${
+                className={`transition-all duration-2000 ease-out drop-shadow-sm ${
                   score >= 80 ? 'text-success' : 
                   score >= 60 ? 'text-warning' : 'text-error'
                 }`}
@@ -58,47 +66,70 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                 }}
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center z-20">
               <div className="text-center">
-                <div className="text-3xl font-bold text-foreground">{score}</div>
-                <div className="text-sm text-muted-foreground">Score</div>
+                <div className={`text-4xl font-bold mb-1 ${
+                  score >= 80 ? 'text-success' : 
+                  score >= 60 ? 'text-warning' : 'text-error'
+                }`}>{score}</div>
+                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">ATS Score</div>
               </div>
             </div>
           </div>
-          <div className="space-y-1">
-            <h4 className="text-xl font-semibold text-foreground">{scoreDescription}</h4>
-            <p className="text-sm text-muted-foreground">
-              Your resume matches {score}% of key requirements
+          <div className="space-y-2">
+            <h4 className={`text-2xl font-bold ${
+              score >= 80 ? 'text-success' : 
+              score >= 60 ? 'text-warning' : 'text-error'
+            }`}>{scoreDescription}</h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Your resume matches <span className="font-semibold text-foreground">{score}%</span> of key requirements for this role
             </p>
           </div>
         </div>
 
         {/* Score Breakdown */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center p-3 bg-success-muted rounded-lg border border-success/20">
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="text-success" size={16} />
-              <span className="text-sm font-medium text-foreground">Keywords Found</span>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center p-4 bg-gradient-to-br from-success/10 to-success/5 rounded-xl border border-success/20 shadow-sm">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-success/20 rounded-lg flex items-center justify-center">
+                <CheckCircle className="text-success" size={16} />
+              </div>
+              <span className="font-semibold text-foreground">Keywords Found</span>
             </div>
-            <span className="text-sm font-semibold text-success">
-              {foundKeywords.length}/{totalKeywords}
-            </span>
+            <div className="text-right">
+              <div className="text-lg font-bold text-success">
+                {foundKeywords.length}/{totalKeywords}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {Math.round((foundKeywords.length / totalKeywords) * 100)}% match
+              </div>
+            </div>
           </div>
           
-          <div className="flex justify-between items-center p-3 bg-primary/5 rounded-lg border border-primary/20">
-            <div className="flex items-center space-x-2">
-              <FileText className="text-primary" size={16} />
-              <span className="text-sm font-medium text-foreground">Resume Format</span>
+          <div className="flex justify-between items-center p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20 shadow-sm">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                <FileText className="text-primary" size={16} />
+              </div>
+              <span className="font-semibold text-foreground">Resume Format</span>
             </div>
-            <span className="text-sm font-semibold text-primary">{formatScore}</span>
+            <div className="text-right">
+              <div className="text-lg font-bold text-primary">{formatScore}</div>
+              <div className="text-xs text-muted-foreground">ATS Compatible</div>
+            </div>
           </div>
 
-          <div className="flex justify-between items-center p-3 bg-warning-muted rounded-lg border border-warning/20">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="text-warning" size={16} />
-              <span className="text-sm font-medium text-foreground">Missing Keywords</span>
+          <div className="flex justify-between items-center p-4 bg-gradient-to-br from-warning/10 to-warning/5 rounded-xl border border-warning/20 shadow-sm">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-warning/20 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="text-warning" size={16} />
+              </div>
+              <span className="font-semibold text-foreground">Missing Keywords</span>
             </div>
-            <span className="text-sm font-semibold text-warning">{missingKeywords.length}</span>
+            <div className="text-right">
+              <div className="text-lg font-bold text-warning">{missingKeywords.length}</div>
+              <div className="text-xs text-muted-foreground">To Improve</div>
+            </div>
           </div>
         </div>
       </CardContent>

@@ -2,34 +2,46 @@
 
 ## Overview
 
-This is a full-stack web application for analyzing resumes against Applicant Tracking Systems (ATS). The application allows users to upload their resumes (PDF or DOCX) and select target job roles to receive detailed analysis including ATS scores, keyword matching, and improvement suggestions.
+This is a frontend-only web application for analyzing resumes against Applicant Tracking Systems (ATS). The application provides client-side resume analysis with modern design, dark mode support, and full responsiveness. Users can upload PDF or DOCX resumes, select target job roles, and receive detailed ATS scoring, keyword analysis, and improvement suggestions.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Recent Changes (January 2025)
+
+✓ **Enhanced Design System**: Complete visual overhaul with modern gradients, improved spacing, and enhanced animations
+✓ **Dark Mode Implementation**: Full dark mode support with theme toggle and proper color schemes
+✓ **Responsive Design**: Mobile-first approach with breakpoint optimizations for all screen sizes
+✓ **PDF Parsing Fix**: Improved PDF text extraction with better error handling and formatting
+✓ **Component Enhancements**: All components redesigned with hover effects, better visual hierarchy, and accessibility
+✓ **Performance Optimizations**: Enhanced animations, better loading states, and smoother transitions
 
 ## System Architecture
 
 ### Frontend Architecture
 - **Framework**: React 18 with TypeScript
 - **Routing**: Wouter for client-side routing
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **State Management**: React hooks and TanStack Query for server state
+- **Styling**: Tailwind CSS with shadcn/ui components and custom design system
+- **State Management**: React hooks for local state management
 - **Build Tool**: Vite for development and building
 - **UI Library**: Comprehensive component library using Radix UI primitives
+- **Theme System**: Custom dark/light mode implementation with system preference detection
+- **File Processing**: 100% client-side PDF and DOCX parsing with no server dependency
 
-### Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **Runtime**: Node.js with ES modules
-- **Database**: PostgreSQL with Drizzle ORM
-- **Session Storage**: In-memory storage (MemStorage class)
-- **File Processing**: Client-side PDF and DOCX parsing
+### Design System
+- **Color Scheme**: Custom HSL-based color system with full dark mode support
+- **Typography**: Modern font scales with responsive sizing
+- **Animations**: Smooth transitions, hover effects, and micro-interactions
+- **Responsive Design**: Mobile-first approach with breakpoint optimizations
+- **Accessibility**: ARIA labels, keyboard navigation, and screen reader support
 
-### Data Storage Solutions
-- **Primary Database**: PostgreSQL configured via Drizzle
-- **ORM**: Drizzle ORM with schema-first approach
-- **Migration Management**: Drizzle Kit for database migrations
-- **Session Storage**: Currently using in-memory storage with interface for easy migration to database
+### Client-Side Processing
+- **PDF Parsing**: pdfjs-dist library with CDN worker for text extraction
+- **DOCX Parsing**: mammoth library for Word document processing
+- **File Validation**: Type and size validation before processing
+- **Privacy-First**: All processing happens locally in the browser
+- **No Data Collection**: Zero data sent to servers or external services
 
 ## Key Components
 

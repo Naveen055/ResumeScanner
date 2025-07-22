@@ -25,27 +25,63 @@ export class ResumeParser {
   }
 
   private async parsePDF(file: File): Promise<string> {
-    // Dynamic import to avoid bundling issues
-    const pdfjsLib = await import('pdfjs-dist');
-    
-    // Set worker source
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+    try {
+      // Dynamic import to avoid bundling issues
+      const pdfjsLib = await import('pdfjs-dist');
+      
+      // Set worker source with the correct version
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    
-    let fullText = '';
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      fullText += pageText + '\n';
+      const arrayBuffer = await file.arrayBuffer();
+      
+      // Load the PDF document
+      const loadingTask = pdfjsLib.getDocument({
+        data: arrayBuffer,
+        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+        cMapPacked: true,
+      });
+      
+      const pdf = await loadingTask.promise;
+      let fullText = '';
+      
+      // Extract text from all pages
+      for (let i = 1; i <= pdf.numPages; i++) {
+        try {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          
+          // Extract text items and join them properly
+          const pageText = textContent.items
+            .filter((item: any) => item.str && item.str.trim())
+            .map((item: any) => {
+              // Handle text positioning for better formatting
+              let text = item.str.trim();
+              if (item.hasEOL) {
+                text += '\n';
+              }
+              return text;
+            })
+            .join(' ');
+          
+          if (pageText.trim()) {
+            fullText += pageText + '\n';
+          }
+        } catch (pageError) {
+          console.warn(`Error processing page ${i}:`, pageError);
+          // Continue with other pages even if one fails
+        }
+      }
+      
+      // Clean up the extracted text
+      return fullText
+        .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+        .replace(/\n\s+/g, '\n') // Clean up line breaks
+        .trim();
+        
+    } catch (error) {
+      console.error('PDF parsing error:', error);
+      throw new Error(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
-    
-    return fullText.trim();
   }
 
   private async parseDOCX(file: File): Promise<string> {

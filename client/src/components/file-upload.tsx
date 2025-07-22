@@ -77,37 +77,50 @@ export function FileUpload({ onFileUploaded, uploadedFile, onFileRemoved, disabl
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.pdf,.docx';
-    input.onchange = handleFileSelect;
+    input.onchange = (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        handleFile(target.files[0]);
+      }
+    };
     input.click();
-  }, [handleFileSelect, disabled, isProcessing]);
+  }, [handleFile, disabled, isProcessing]);
 
   if (uploadedFile) {
     return (
-      <Card>
+      <Card className="card-enhanced">
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-            <Upload className="text-primary mr-2" size={20} />
+            <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center mr-3">
+              <Upload className="text-primary-foreground" size={14} />
+            </div>
             Upload Your Resume
           </h3>
           
-          <div className="p-4 bg-success-muted rounded-lg border border-success">
+          <div className="p-4 bg-gradient-to-br from-success/10 to-success/5 rounded-xl border border-success/20 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-success/20 rounded flex items-center justify-center">
-                  <File className="text-success" size={16} />
+                <div className="w-10 h-10 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center">
+                  <File className="text-success" size={18} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">{uploadedFile.name}</p>
-                  <p className="text-xs text-muted-foreground">{parser.formatFileSize(uploadedFile.size)}</p>
+                  <p className="text-sm font-semibold text-foreground">{uploadedFile.name}</p>
+                  <p className="text-xs text-muted-foreground flex items-center space-x-1">
+                    <span>{parser.formatFileSize(uploadedFile.size)}</span>
+                    <span>•</span>
+                    <span className="text-success">Ready for analysis</span>
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="text-success" size={16} />
+                <div className="w-8 h-8 bg-success/20 rounded-full flex items-center justify-center">
+                  <CheckCircle className="text-success" size={16} />
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onFileRemoved}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                   disabled={disabled}
                 >
                   <X size={16} />
@@ -121,18 +134,20 @@ export function FileUpload({ onFileUploaded, uploadedFile, onFileRemoved, disabl
   }
 
   return (
-    <Card>
+    <Card className="card-enhanced card-hover">
       <CardContent className="p-6">
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-          <Upload className="text-primary mr-2" size={20} />
+          <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center mr-3">
+            <Upload className="text-primary-foreground" size={14} />
+          </div>
           Upload Your Resume
         </h3>
         
         <div
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+          className={`group border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer relative overflow-hidden ${
             isDragOver 
-              ? 'border-primary bg-primary/5' 
-              : 'border-border hover:border-primary/50 hover:bg-primary/5'
+              ? 'border-primary bg-gradient-to-br from-primary/10 to-primary/5 scale-[1.02] shadow-lg shadow-primary/25' 
+              : 'border-border hover:border-primary/50 hover:bg-gradient-to-br hover:from-primary/5 hover:to-primary/10 hover:scale-[1.01] hover:shadow-md'
           } ${disabled || isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
           onDrop={handleDrop}
           onDragOver={(e) => {
@@ -142,17 +157,41 @@ export function FileUpload({ onFileUploaded, uploadedFile, onFileRemoved, disabl
           onDragLeave={() => setIsDragOver(false)}
           onClick={handleClick}
         >
-          <div className="space-y-4">
-            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Upload className="text-primary" size={24} />
+          {/* Background decoration */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div className="relative space-y-4">
+            <div className={`w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto transition-all duration-300 ${
+              isDragOver ? 'scale-110 bg-gradient-to-br from-primary/30 to-primary/15' : 'group-hover:scale-105'
+            }`}>
+              <Upload className={`text-primary transition-all duration-300 ${
+                isProcessing ? 'animate-pulse' : isDragOver ? 'scale-110' : ''
+              }`} size={28} />
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground">
-                {isProcessing ? 'Processing file...' : 'Drop your resume here, or click to browse'}
+              <p className="text-base font-semibold text-foreground mb-2">
+                {isProcessing ? (
+                  <span className="flex items-center justify-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <span>Processing file...</span>
+                  </span>
+                ) : isDragOver ? (
+                  'Drop your file here'
+                ) : (
+                  'Drop your resume here, or click to browse'
+                )}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground">
                 Supports PDF and DOCX files up to 10MB
               </p>
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                <span className="px-3 py-1 bg-muted/50 text-xs font-medium text-muted-foreground rounded-full">
+                  .PDF
+                </span>
+                <span className="px-3 py-1 bg-muted/50 text-xs font-medium text-muted-foreground rounded-full">
+                  .DOCX
+                </span>
+              </div>
             </div>
           </div>
         </div>

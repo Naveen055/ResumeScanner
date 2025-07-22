@@ -30,17 +30,21 @@ export function KeywordAnalysis({ analysis }: KeywordAnalysisProps) {
   };
 
   return (
-    <Card>
+    <Card className="card-enhanced card-hover">
       <CardContent className="p-6">
         <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center">
-          <Plus className="text-primary mr-2" size={20} />
+          <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center mr-3">
+            <Plus className="text-primary-foreground" size={14} />
+          </div>
           Keyword Analysis
         </h3>
 
         {/* Found Keywords */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
-            <Check className="text-success mr-2" size={14} />
+        <div className="mb-8">
+          <h4 className="text-sm font-bold text-foreground mb-4 flex items-center">
+            <div className="w-5 h-5 bg-success/20 rounded-full flex items-center justify-center mr-2">
+              <Check className="text-success" size={12} />
+            </div>
             Found Keywords ({foundKeywords.length})
           </h4>
           <div className="flex flex-wrap gap-2">
@@ -48,8 +52,9 @@ export function KeywordAnalysis({ analysis }: KeywordAnalysisProps) {
               <Badge
                 key={index}
                 variant="secondary"
-                className="bg-success-muted text-success hover:bg-success-muted border-success/20"
+                className="bg-gradient-to-br from-success/15 to-success/10 text-success hover:from-success/20 hover:to-success/15 border-success/30 transition-all duration-200 hover:scale-105 font-medium px-3 py-1.5"
               >
+                <Check size={12} className="mr-1" />
                 {keyword}
               </Badge>
             ))}
@@ -58,25 +63,38 @@ export function KeywordAnalysis({ analysis }: KeywordAnalysisProps) {
 
         {/* Missing Keywords */}
         <div>
-          <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
-            <Plus className="text-warning mr-2" size={14} />
+          <h4 className="text-sm font-bold text-foreground mb-4 flex items-center">
+            <div className="w-5 h-5 bg-warning/20 rounded-full flex items-center justify-center mr-2">
+              <Plus className="text-warning" size={12} />
+            </div>
             Suggested Keywords ({missingKeywords.length})
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {missingKeywords.map((item, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between p-3 rounded-lg border ${getPriorityColor(item.priority)}`}
+                className={`group flex items-center justify-between p-4 rounded-xl border transition-all duration-200 hover:scale-[1.02] hover:shadow-md ${getPriorityColor(item.priority)}`}
               >
                 <div className="flex items-center space-x-3">
-                  {getPriorityIcon(item.priority)}
-                  <span className="text-sm font-medium text-foreground">{item.keyword}</span>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    item.priority === 'High Priority' ? 'bg-warning/20' : 'bg-muted/50'
+                  }`}>
+                    {getPriorityIcon(item.priority)}
+                  </div>
+                  <span className="font-semibold text-foreground">{item.keyword}</span>
                 </div>
-                <span className={`text-xs font-medium ${
-                  item.priority === 'High Priority' ? 'text-warning' : 'text-muted-foreground'
-                }`}>
-                  {item.priority}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                    item.priority === 'High Priority' 
+                      ? 'bg-warning/20 text-warning' 
+                      : 'bg-muted/50 text-muted-foreground'
+                  }`}>
+                    {item.priority.replace(' Priority', '')}
+                  </span>
+                  {item.priority === 'High Priority' && (
+                    <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
