@@ -29,16 +29,17 @@ export class ResumeParser {
       // Dynamic import to avoid bundling issues
       const pdfjsLib = await import('pdfjs-dist');
       
-      // Set worker source with the correct version
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+      // Set worker source - use jsdelivr CDN for better compatibility
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.3.93/build/pdf.worker.min.js`;
 
       const arrayBuffer = await file.arrayBuffer();
       
-      // Load the PDF document
+      // Load the PDF document with proper configuration
       const loadingTask = pdfjsLib.getDocument({
         data: arrayBuffer,
-        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-        cMapPacked: true,
+        verbosity: 0,
+        disableAutoFetch: true,
+        disableStream: true,
       });
       
       const pdf = await loadingTask.promise;
